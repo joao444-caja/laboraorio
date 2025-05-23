@@ -3,7 +3,7 @@
 #include <time.h>   
 
 #define N 1000
-#define MAX_RANDOM 999
+#define MAX_RANDOM 9999
 
 void gerarvetor(int vetor[]) {
     for (int i = 0; i < N; i++) {
