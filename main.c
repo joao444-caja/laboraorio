@@ -6,12 +6,7 @@
     int total_clientes = 0;
     int total_produtos = 0;
 
-    void cadastrar_cliente() {
-        printf("Digite o nome do cliente: ");
-        scanf("%s", clientes[total_clientes]);
-        printf("Cliente %s cadastrado com sucesso!\n", clientes[total_clientes]);
-        total_clientes++;
-    }
+    
     void cadastrar_produto() {
         char produto;
         printf("Digite o nome do produto: ");
@@ -30,16 +25,7 @@
         scanf("%d", &quantidade);
         printf("Venda cadastrada com sucesso! Cliente: %s, Produto: %s, Quantidade: %d\n", cliente, produto, quantidade);
     }
-    void listar_clientes() {
-    if (total_clientes == 0) {
-            printf("Nenhum cliente cadastrado.\n");
-        } else {
-            printf("Clientes cadastrados:\n");
-            for (int i = 0; i < total_clientes; i++) {
-                printf("%s\n", clientes[i]);
-            }
-        }
-    }
+   
     void listar_produtos() {
         if (total_produtos == 0) {
             printf("Nenhum produto cadastrado.\n");
