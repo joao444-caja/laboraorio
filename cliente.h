@@ -9,7 +9,7 @@
         }
     }
 
-evoid cadastrar_cliente() {
+void cadastrar_cliente() {
         printf("Digite o nome do cliente: ");
         scanf("%s", clientes[total_clientes]);
         printf("Cliente %s cadastrado com sucesso!\n", clientes[total_clientes]);
