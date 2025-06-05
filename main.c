@@ -2,7 +2,7 @@
 
 
     char clientes[10][50];
-    char produtos[10][50];
+    char produtos[10][50];  
     int total_clientes = 0;
     int total_produtos = 0;
 
