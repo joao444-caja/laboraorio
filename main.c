@@ -1,16 +1,112 @@
-    #include <stdio.h>
+#include <stdio.h>
+#include <string.h>
 
+#define MAX_CLIENTES 100
+#define MAX_PRODUTOS 100
+#define MAX_VENDAS 100
 
-    char clientes[10][50];
-    char produtos[10][50];
-    int total_clientes = 0;
-    int total_produtos = 0;
+typedef struct {
+    int id;
+    char nome[50];
+    char cpf[15];
+} Cliente;
 
+typedef struct {
+    int id;
+    char nome[50];
+    float preco;
+    int estoque;
+} Produto;
 
-    int main() {
-    int opcao = -1;
+typedef struct {
+    int id_produto;
+    int quantidade;
+    float valor_unitario;
+} ItemVenda;
+
+typedef struct { 
+    int id_venda;
+    int id_cliente;
+    ItemVenda itens[MAX_VENDAS];
+    int total_vendas;
+    int total_itens;
+} Venda;
+
+Cliente clientes[MAX_CLIENTES];
+Produto produtos[MAX_PRODUTOS];
+Venda vendas[MAX_VENDAS];
+
+int total_clientes = 0;
+int total_produtos = 0;
+int total_vendas = 0;
+
+       void cadastrar_venda() {
+        Venda v;
+        v.id_venda = total_vendas + 1;
+        printf("Digite o ID do cliente: ");
+        scanf("%d", &v.id_cliente);
+        v.total_itens = 0;
+        v.total_vendas = 0.0;
+
+        char continuar = 's';
+        while(continuar == 's' && v.total_itens < MAX_VENDAS) {
+            ItemVenda item;
+            printf("Digite o ID do produto: ");
+            scanf("%d", &item.id_produto);
+            printf("Digite a quantidade: ");
+            scanf("%d", &item.quantidade);
+
+            Produto p = produtos[item.id_produto - 1];
+            item.valor_unitario = p.preco;
+            v.itens[v.total_itens] = item;
+            v.total_vendas += item.valor_unitario * item.quantidade;
+
+            v.total_itens++;
+
+            printf("Deseja adicionar mais um item? (s/n): ");
+            scanf(" %c", &continuar);
+        }
+    }
+     void cadastrar_produto() {
+        Produto p;
+        p.id = total_produtos + 1;
+        printf("Digite o nome do produto: ");
+        scanf("%s", p.nome);
+        printf("Digite o preço unitario: ");
+        scanf("%f", &p.preco);
+        printf("Digite a quantidade em estoque: ");
+        scanf("%d", &p.estoque);
+        produtos[total_produtos++] = p;
+        printf("Produto %s cadastrado com sucesso!\n", p.nome);
+    }
+ void listar_produtos() {
+       for (int i = 0; i < total_clientes; i++) {
+            printf("id: %d, Nome: %s, Preço: %.2f, Estoque: %d\n", 
+                   produtos[i].id, produtos[i].nome, produtos[i].preco, produtos[i].estoque);
+            }
+    }
+     void listar_clientes() {
+        for (int i = 0; i < total_clientes; i++) {
+            printf("ID: %d, Nome: %s, CPF: %s\n", clientes[i].id, clientes[i].nome, clientes[i].cpf);
+        }
+    }
+
+void cadastrar_cliente() {
+        Cliente c;
+        c.id = total_clientes + 1;
+        printf("Digite o nome do cliente: ");
+        scanf("%s", c.nome);
+        printf("Digite o CPF do cliente: ");
+        scanf("%s", c.cpf);
+        clientes[total_clientes++] = c;
+        printf("Cliente %s cadastrado com sucesso!\n", c.nome);
+    }
+    
+
+int main() {
+  int opcao;
     do {
-        printf("MENU\n");
+        printf("\nMENU\n");
         printf("1. Cadastrar Cliente\n");
         printf("2. Cadastrar Produto\n");
         printf("3. Cadastrar Venda\n");
@@ -19,21 +115,17 @@
         printf("0. Sair\n");
         printf("Escolha uma opcao: ");
         scanf("%d", &opcao);
-        if (opcao == 1) {
-            cadastrar_cliente();
-        } else if (opcao == 2) {
-            cadastrar_produto();
-        } else if (opcao == 3) {
-            cadastrar_venda();
-        } else if (opcao == 4) {
-            listar_clientes();
-        } else if (opcao == 5) {
-            listar_produtos();
-        } else if (opcao != 0) {
-            printf("Opcao invalida. Tente novamente.\n");
+
+        switch (opcao) {
+            case 1: cadastrar_cliente(); break;
+            case 2: cadastrar_produto(); break;
+            case 3: cadastrar_venda(); break;
+            case 4: listar_clientes(); break;
+            case 5: listar_produtos(); break;
+            case 0: printf("Saindo do programa.\n"); break;
+            default: printf("Opcao invalida.\n"); break;
         }
-    }
-    while (opcao != 0);
-    printf("Saindo do programa\n");
+    } while (opcao != 0);
+    
     return 0;
     }
