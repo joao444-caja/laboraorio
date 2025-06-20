@@ -101,7 +101,40 @@ void cadastrar_cliente() {
         clientes[total_clientes++] = c;
         printf("Cliente %s cadastrado com sucesso!\n", c.nome);
     }
-    
+
+void excluir_cliente() {
+    printf("Digite o ID do cliente a ser excluído: ");
+    int id;
+    scanf("%d", &id);
+    for (int i = 0; i < total_clientes; i++) {
+        if (clientes[i].id == id) {
+            for (int j = i; j < total_clientes - 1; j++) {
+                clientes[j] = clientes[j + 1];
+            }
+            total_clientes--;
+            printf("Cliente com ID %d excluído com sucesso.\n", id);
+            return;
+        }
+    }
+    printf("Cliente com ID %d não encontrado.\n", id);
+}
+
+void excluir_produto() {
+    printf("Digite o ID do produto a ser excluído: ");
+    int id;
+    scanf("%d", &id);
+    for (int i = 0; i < total_produtos; i++) {
+        if (produtos[i].id == id) {
+            for (int j = i; j < total_produtos - 1; j++) {
+                produtos[j] = produtos[j + 1];
+            }
+            total_produtos--;
+            printf("Produto com ID %d excluído com sucesso.\n", id);
+            return;
+        }
+    }
+    printf("Produto com ID %d não encontrado.\n", id);
+}
 
 int main() {
   int opcao;
@@ -112,6 +145,8 @@ int main() {
         printf("3. Cadastrar Venda\n");
         printf("4. Listar Clientes\n");
         printf("5. Listar Produtos\n");
+        printf("6. Excluir Cliente\n");
+        printf("7. Excluir Produto\n");
         printf("0. Sair\n");
         printf("Escolha uma opcao: ");
         scanf("%d", &opcao);
@@ -122,6 +157,8 @@ int main() {
             case 3: cadastrar_venda(); break;
             case 4: listar_clientes(); break;
             case 5: listar_produtos(); break;
+            case 6: excluir_cliente(); break;
+            case 7: excluir_produto(); break;
             case 0: printf("Saindo do programa.\n"); break;
             default: printf("Opcao invalida.\n"); break;
         }
