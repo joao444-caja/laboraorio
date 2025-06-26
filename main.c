@@ -213,32 +213,51 @@
         printf("Produto com ID %d não encontrado.\n", id);
     }
 
+    void excluir_venda() {
+        printf("Digite o ID da venda a ser excluída: ");
+        int id;
+        scanf("%d", &id);
+        for (int i = 0; i < total_vendas; i++) {
+            if (vendas[i].id_venda == id) {
+                for (int j = i; j < total_vendas - 1; j++) {
+                    vendas[j] = vendas[j + 1];
+                }
+                total_vendas--;
+                printf("Venda com ID %d excluída com sucesso.\n", id);
+                return;
+            }
+        }
+        printf("Venda com ID %d não encontrada.\n", id);
+    }
+
     int main() {
     int opcao;
         do {
-            printf("\nMENU\n");
-            printf("1. Cadastrar Cliente\n");
-            printf("2. Cadastrar Produto\n");
-            printf("3. Cadastrar Venda\n");
-            printf("4. Listar Clientes\n");
-            printf("5. Listar Produtos\n");
-            printf("6. Excluir Cliente\n");
-            printf("7. Excluir Produto\n");
-            printf("8. Listar Vendas\n");
-            printf("0. Sair\n");
-            printf("Escolha uma opcao: ");
+            printf("\n\033[1;32m---   ---  MENU  ---  ---\033[0m\n");
+            printf("\033[1;32m--1. Cadastrar Cliente\033[0m\n");
+            printf("\033[1;32m--2. Cadastrar Produto\033[0m\n");
+            printf("\033[1;32m--3. Cadastrar Venda\033[0m\n");
+            printf("\033[1;32m--4. Listar Vendas\033[0m\n");
+            printf("\033[1;32m--5. Listar Clientes\033[0m\n");
+            printf("\033[1;32m--6. Listar Produtos\033[0m\n");
+            printf("\033[1;32m--7. Excluir venda\033[0m\n");
+            printf("\033[1;32m--8. Excluir cliente\033[0m\n");
+            printf("\033[1;32m--9. Excluir produto\033[0m\n");
+            printf("\033[1;31m--0. Sair\033[0m\n");
+            printf("\033[38;5;208m--Escolha uma opcao: \033[0m");
             scanf("%d", &opcao);
 
             switch (opcao) {
                 case 1: cadastrar_cliente(); break;
                 case 2: cadastrar_produto(); break;
                 case 3: cadastrar_venda(); break;
-                case 4: listar_clientes(); break;
-                case 5: listar_produtos(); break;
-                case 6: excluir_cliente(); break;
-                case 7: excluir_produto(); break;
-                case 8: listar_venda(); break;
-                case 0: printf("Saindo do programa.\n"); break;
+                case 4: listar_venda(); break;
+                case 5: listar_clientes(); break;
+                case 6: listar_produtos(); break;
+                case 7: excluir_venda(); break;
+                case 8: excluir_cliente(); break;
+                case 9: excluir_produto(); break;
+                case 0: printf("\033[38;5;208mSaindo do programa.\033[0m\n"); break;
                 default: printf("Opcao invalida.\n"); break;
             }
         } while (opcao != 0);
