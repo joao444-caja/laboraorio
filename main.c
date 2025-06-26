@@ -28,7 +28,7 @@
         int id_venda;
         int id_cliente;
         ItemVenda itens[MAX_VENDAS];
-        int total_vendas;
+        float total_vendas;
         int total_itens;
     } Venda;
 
@@ -40,32 +40,77 @@
     int total_produtos = 0;
     int total_vendas = 0;
 
+    Cliente* buscar_cliente(int id) { 
+    for (int i = 0; i < total_clientes; i++) {
+        if (clientes[i].id == id) {
+            return &clientes[i];
+        }
+    }
+    return NULL; 
+    }
+    
+    Produto* buscar_produto(int id) {
+        for (int i = 0; i < total_produtos; i++) {
+            if (produtos[i].id == id) {
+                return &produtos[i];
+            }
+        }
+        return NULL;
+    }
         void cadastrar_venda() {
-            Venda v;
-            v.id_venda = total_vendas + 1;
+            if (total_vendas >= MAX_VENDAS) {
+                printf("Limite de vendas atingido.\n");
+                return;
+            } 
+
+            Venda v_nova; 
+            v_nova.id_venda = total_vendas + 1;
             printf("Digite o ID do cliente: ");
-            scanf("%d", &v.id_cliente);
-            v.total_itens = 0;
-            v.total_vendas = 0.0;
+            scanf("%d", &v_nova.id_cliente);
+
+             Cliente* cliente_encontrado = buscar_cliente(v_nova.id_cliente); 
+    if (cliente_encontrado == NULL) {   
+        printf("Cliente com ID %d não encontrado. Venda cancelada.\n", v_nova.id_cliente); 
+        return; 
+    }
+
+            v_nova.total_itens = 0;
+            v_nova.total_vendas = 0.0;
 
             char continuar = 's';
-            while(continuar == 's' && v.total_itens < MAX_VENDAS) {
+            while (continuar == 's' && v_nova.total_itens < MAX_VENDAS) {
                 ItemVenda item;
                 printf("Digite o ID do produto: ");
                 scanf("%d", &item.id_produto);
+
+                Produto* produto_encontrado = buscar_produto(item.id_produto);
+                if (produto_encontrado == NULL) {
+                    printf("Produto com ID %d não encontrado.\n", item.id_produto);
+                    continue;
+                }
+
                 printf("Digite a quantidade: ");
                 scanf("%d", &item.quantidade);
 
-                Produto p = produtos[item.id_produto - 1];
-                item.valor_unitario = p.preco;
-                v.itens[v.total_itens] = item;
-                v.total_vendas += item.valor_unitario * item.quantidade;
+                if (item.quantidade > produto_encontrado->estoque) {
+                    printf("Quantidade solicitada maior que o estoque disponível.\n");
+                    continue;
+                }
 
-                v.total_itens++;
+                item.valor_unitario = produto_encontrado->preco;
+                v_nova.itens[v_nova.total_itens++] = item;
+
+                v_nova.total_vendas += item.quantidade * item.valor_unitario;
+                produto_encontrado->estoque -= item.quantidade; // atualiza o estoque
 
                 printf("Deseja adicionar mais um item? (s/n): ");
                 scanf(" %c", &continuar);
             }
+            {
+                vendas[total_vendas++] = v_nova; // adiciona a venda ao array de vendas
+                printf("Venda cadastrada com sucesso! ID da venda: %d, Total: %.2f\n", v_nova.id_venda, v_nova.total_vendas);
+            }
+            
         }
         void cadastrar_produto() {
             Produto p;
@@ -103,15 +148,35 @@
         }
 
     void listar_venda() { 
-        for (int i = 0; i < total_vendas; i++) {
-            Venda v = vendas[i];
-            printf("Venda ID: %d, Cliente ID: %d, Total: %.2d\n", v.id_venda, v.id_cliente, v.total_vendas);
-            for (int j = 0; j < v.total_itens; j++) {
-                ItemVenda item = v.itens[j];
-                printf("Produto ID: %d, Quantidade: %d, Valor Unitário: %.2f\n", 
-                    item.id_produto, item.quantidade, item.valor_unitario);
+        if (total_vendas == 0) {
+        printf("Nenhuma venda cadastrada.\n");
+        return;
+    }
+    printf("\n--- Lista de Vendas ---\n");
+    for (int i = 0; i < total_vendas; i++) {
+        Venda v = vendas[i];
+        printf("Venda ID: %d, Cliente ID: %d, Total: %.2f\n", v.id_venda, v.id_cliente, v.total_vendas);
+        Cliente* cliente_ptr = buscar_cliente(v.id_cliente);
+        if (cliente_ptr != NULL) {
+            printf("  Cliente: %s (CPF: %s)\n", cliente_ptr->nome, cliente_ptr->cpf);
+        } else {
+            printf("  Cliente: (ID %d - Não encontrado)\n", v.id_cliente);
+        }
+
+        printf("  Itens da Venda (%d):\n", v.total_itens);
+        for (int j = 0; j < v.total_itens; j++) {
+            ItemVenda item = v.itens[j];
+            Produto* produto_ptr = buscar_produto(item.id_produto);
+            if (produto_ptr != NULL) {
+                printf("    - Produto: %s (ID: %d), Quantidade: %d, Valor Unitário: %.2f, Subtotal: %.2f\n",
+                       produto_ptr->nome, item.id_produto, item.quantidade, item.valor_unitario,
+                       item.quantidade * item.valor_unitario);
+            } else {
+                printf("    - Produto ID: %d (Não encontrado), Quantidade: %d, Valor Unitário: %.2f\n",
+                       item.id_produto, item.quantidade, item.valor_unitario);
             }
         }
+    }
     }
 
     void excluir_cliente() {
